@@ -73,8 +73,10 @@ def test_package_import():
     reason="Darkelf Shadow package/repository not available",
 )
 def test_main_module_import():
-    """Main module imports successfully."""
-    from shadow import main  # noqa: F401
+    """CLI module imports successfully."""
+    from shadow.cli import main
+
+    assert callable(main)
 
 
 @pytest.mark.skipif(
@@ -94,7 +96,7 @@ def test_package_path_exists():
 )
 def test_cli_entrypoint_exists():
     """CLI entrypoint exists."""
-    from shadow.main import main
+    from shadow.cli import main
 
     assert callable(main)
 
