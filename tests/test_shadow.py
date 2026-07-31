@@ -16,7 +16,7 @@ import pytest
 
 pytestmark = pytest.mark.shadow
 
-HAS_SHADOW = find_spec("darkelf_shadow") is not None
+HAS_SHADOW = find_spec("shadow") is not None
 
 
 # ---------------------------------------------------------------------
@@ -65,7 +65,7 @@ def test_qtwebengine_available():
 )
 def test_package_import():
     """Package imports successfully."""
-    import darkelf_shadow  # noqa: F401
+    import shadow  # noqa: F401
 
 
 @pytest.mark.skipif(
@@ -74,7 +74,7 @@ def test_package_import():
 )
 def test_main_module_import():
     """Main module imports successfully."""
-    from darkelf_shadow import main  # noqa: F401
+    from shadow import main  # noqa: F401
 
 
 @pytest.mark.skipif(
@@ -83,9 +83,9 @@ def test_main_module_import():
 )
 def test_package_path_exists():
     """Installed package has a valid filesystem path."""
-    import darkelf_shadow
+    import shadow
 
-    assert Path(darkelf_shadow.__file__).exists()
+    assert Path(shadow.__file__).exists()
 
 
 @pytest.mark.skipif(
@@ -94,7 +94,7 @@ def test_package_path_exists():
 )
 def test_cli_entrypoint_exists():
     """CLI entrypoint exists."""
-    from darkelf_shadow.main import main
+    from shadow.main import main
 
     assert callable(main)
 
@@ -105,7 +105,7 @@ def test_cli_entrypoint_exists():
 )
 def test_package_has_version():
     """Package exposes a version string if available."""
-    import darkelf_shadow
+    import shadow
 
     version = getattr(darkelf_shadow, "__version__", None)
 
