@@ -1,3 +1,4 @@
+
 # 🧪 Darkelf Pytests
 
 **Official centralized pytest suite for the Darkelf Labs ecosystem.**
@@ -125,3 +126,7 @@ LGPL-3.0-or-later
 # Darkelf Labs
 
 Privacy-first software engineered for security research, defensive development, and modern browser technologies.
+
+# Darkelf-Pytests
+Integration and regression test suite for the Darkelf ecosystem.
+
