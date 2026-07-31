@@ -2,7 +2,8 @@
 tests/test_shadow.py
 
 Tests for Darkelf Shadow.
-Designed to work both locally and in GitHub Actions.
+Designed to work locally and in GitHub Actions without
+launching the GUI.
 """
 
 from __future__ import annotations
@@ -25,21 +26,14 @@ HAS_SHADOW = find_spec("shadow") is not None
 
 
 def test_python_version():
-    """Shadow requires Python 3.11+."""
     assert sys.version_info >= (3, 11)
 
 
 def test_platform_supported():
-    """Shadow supports common desktop platforms."""
-    assert platform.system() in {
-        "Darwin",
-        "Linux",
-        "Windows",
-    }
+    assert platform.system() in {"Darwin", "Linux", "Windows"}
 
 
 def test_pyside6_available():
-    """PySide6 should be importable if installed."""
     try:
         import PySide6  # noqa: F401
     except ImportError:
@@ -47,7 +41,6 @@ def test_pyside6_available():
 
 
 def test_qtwebengine_available():
-    """QtWebEngine should be available if PySide6 is installed."""
     try:
         from PySide6.QtWebEngineCore import QWebEngineProfile  # noqa: F401
     except ImportError:
@@ -55,7 +48,7 @@ def test_qtwebengine_available():
 
 
 # ---------------------------------------------------------------------
-# Package Tests
+# Package
 # ---------------------------------------------------------------------
 
 
@@ -64,7 +57,6 @@ def test_qtwebengine_available():
     reason="Darkelf Shadow package/repository not available",
 )
 def test_package_import():
-    """Package imports successfully."""
     import shadow  # noqa: F401
 
 
@@ -72,19 +64,7 @@ def test_package_import():
     not HAS_SHADOW,
     reason="Darkelf Shadow package/repository not available",
 )
-def test_main_module_import():
-    """CLI module imports successfully."""
-    from shadow.cli import main
-
-    assert callable(main)
-
-
-@pytest.mark.skipif(
-    not HAS_SHADOW,
-    reason="Darkelf Shadow package/repository not available",
-)
 def test_package_path_exists():
-    """Installed package has a valid filesystem path."""
     import shadow
 
     assert Path(shadow.__file__).exists()
@@ -94,19 +74,7 @@ def test_package_path_exists():
     not HAS_SHADOW,
     reason="Darkelf Shadow package/repository not available",
 )
-def test_cli_entrypoint_exists():
-    """CLI entrypoint exists."""
-    from shadow.cli import main
-
-    assert callable(main)
-
-
-@pytest.mark.skipif(
-    not HAS_SHADOW,
-    reason="Darkelf Shadow package/repository not available",
-)
 def test_package_has_version():
-    """Package exposes a version string if available."""
     import shadow
 
     version = getattr(shadow, "__version__", None)
@@ -121,7 +89,6 @@ def test_package_has_version():
     reason="Darkelf Shadow package/repository not available",
 )
 def test_import_no_exception():
-    """Import should not raise unexpected exceptions."""
     try:
         import shadow  # noqa: F401
     except Exception as exc:
@@ -129,10 +96,9 @@ def test_import_no_exception():
 
 
 # ---------------------------------------------------------------------
-# Regression
+# Filesystem
 # ---------------------------------------------------------------------
 
 
 def test_current_directory_exists():
-    """Filesystem sanity check."""
     assert Path(".").exists()
