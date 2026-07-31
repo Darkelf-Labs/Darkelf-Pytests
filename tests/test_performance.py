@@ -98,11 +98,7 @@ def test_directory_walk_speed(repo_root):
 
     start = time.perf_counter()
 
-    files = [
-        p
-        for p in repo_root.rglob("*")
-        if ".git" not in p.parts
-    ]
+    files = [p for p in repo_root.rglob("*") if ".git" not in p.parts]
 
     elapsed = time.perf_counter() - start
 

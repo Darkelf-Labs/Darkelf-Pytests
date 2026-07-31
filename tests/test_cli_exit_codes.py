@@ -69,6 +69,7 @@ def test_secureaudit_version_exit_code():
 
     assert result.returncode == 0
 
+
 def test_secureaudit_invalid_argument():
     require_cli("darkelf-secureaudit")
 
@@ -121,9 +122,7 @@ def test_shadow_help():
             "--help",
         )
     except subprocess.TimeoutExpired:
-        pytest.skip(
-            "darkelf-shadow currently launches the GUI instead of exiting with --help"
-        )
+        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
 
     assert result.returncode == 0
 
