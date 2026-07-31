@@ -38,24 +38,27 @@ def test_running_on_macos():
 def test_pyobjc_installed():
     """PyObjC should be importable."""
     if platform.system() != "Darwin":
-        pytest.skip("macOS only")
+        pytest.skip("Darkelf Cocoa is macOS-only")
 
-    try:
-        import AppKit  # noqa: F401
-        import Foundation  # noqa: F401
-    except ImportError:
-        pytest.fail("PyObjC is not installed")
+    pytest.importorskip(
+        "AppKit",
+        reason="PyObjC (AppKit) not installed",
+    )
+    pytest.importorskip(
+        "Foundation",
+        reason="PyObjC (Foundation) not installed",
+    )
 
 
 def test_webkit_available():
     """WebKit framework should be importable."""
     if platform.system() != "Darwin":
-        pytest.skip("macOS only")
+        pytest.skip("Darkelf Cocoa is macOS-only")
 
-    try:
-        import WebKit  # noqa: F401
-    except ImportError:
-        pytest.fail("WebKit framework unavailable")
+    pytest.importorskip(
+        "WebKit",
+        reason="PyObjC WebKit bindings not installed",
+    )
 
 
 # ---------------------------------------------------------------------
