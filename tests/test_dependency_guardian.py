@@ -43,6 +43,11 @@ def test_import_projectinfo():
 def test_create_scanner(tmp_path):
     from core.scanner import ProjectScanner
 
+    (tmp_path / "package.json").write_text(
+        '{"name":"demo"}',
+        encoding="utf-8",
+    )
+
     scanner = ProjectScanner(tmp_path)
 
     assert scanner is not None
@@ -151,10 +156,8 @@ def test_dependencies_loaded(tmp_path):
 def test_missing_package_json(tmp_path):
     from core.scanner import ProjectScanner
 
-    scanner = ProjectScanner(tmp_path)
-
     with pytest.raises(FileNotFoundError):
-        scanner.scan()
+        ProjectScanner(tmp_path)
 
 
 @pytest.mark.skipif(
@@ -170,7 +173,6 @@ def test_empty_package_json(tmp_path):
     )
 
     scanner = ProjectScanner(tmp_path)
-
     info = scanner.scan()
 
     assert info is not None
@@ -189,5 +191,6 @@ def test_scan_does_not_crash(tmp_path):
     )
 
     scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
 
-    scanner.scan()
+    assert info is not None
