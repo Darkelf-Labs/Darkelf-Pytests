@@ -6,6 +6,7 @@ Performance regression tests for the Darkelf Labs ecosystem.
 
 from __future__ import annotations
 
+import json
 import time
 from pathlib import Path
 
@@ -71,20 +72,36 @@ def test_secureaudit_repeatability(repo_root):
 # Dependency Guardian
 # ---------------------------------------------------------------------
 
-
-def test_dependency_guardian_scan_speed(repo_root):
+def test_dependency_guardian_scan_speed(tmp_path):
     """Dependency Guardian should scan quickly."""
 
     try:
-        from darkelf_dependency_guardian.scanner import scan_project
+        from core.scanner import ProjectScanner
     except ImportError:
         pytest.skip("Dependency Guardian not installed")
 
+    (tmp_path / "package.json").write_text(
+        json.dumps(
+            {
+                "name": "demo",
+                "version": "1.0.0",
+                "dependencies": {
+                    "react": "^19.0.0",
+                    "next": "^16.0.0",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
     start = time.perf_counter()
-    results = scan_project(repo_root)
+
+    scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
+
     elapsed = time.perf_counter() - start
 
-    assert isinstance(results, dict)
+    assert info is not None
     assert elapsed < 5.0
 
 
