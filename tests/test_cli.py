@@ -99,7 +99,10 @@ def test_shadow_exists():
 
 def test_shadow_help():
     """
-    Shadow should support --help. Skip until the CLI exits correctly.
+    Shadow should support --help.
+
+    Skip on Linux runners that do not have the required Qt/OpenGL
+    runtime libraries installed.
     """
     if shutil.which("darkelf-shadow") is None:
         pytest.skip("Darkelf Shadow not installed")
@@ -110,7 +113,12 @@ def test_shadow_help():
             "--help",
         )
     except subprocess.TimeoutExpired:
-        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
+        pytest.skip(
+            "darkelf-shadow currently launches the GUI instead of exiting with --help"
+        )
+
+    if "libEGL.so.1" in result.stderr:
+        pytest.skip("Qt runtime not available on this runner")
 
     assert result.returncode == 0
 
