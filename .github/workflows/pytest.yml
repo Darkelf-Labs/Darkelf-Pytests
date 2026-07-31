@@ -78,13 +78,6 @@ jobs:
           repository: Darkelf-Labs/Darkelf-Shadow-CE
           path: external/Darkelf-Shadow-CE
 
-      - name: Checkout Darkelf Cocoa Browser
-        if: runner.os == 'macOS'
-        uses: actions/checkout@v5
-        with:
-          repository: Darkelf-Labs/Darkelf-Cocoa-Browser
-          path: external/Darkelf-Cocoa-Browser
-
       ####################################################################
       # Install ecosystem packages
       ####################################################################
@@ -98,22 +91,30 @@ jobs:
       - name: Install Shadow CE
         run: pip install -e external/Darkelf-Shadow-CE
 
-      - name: Install Cocoa Browser
-        if: runner.os == 'macOS'
-        run: pip install -e external/Darkelf-Cocoa-Browser
-
       ####################################################################
       # Quality
       ####################################################################
 
       - name: Ruff Lint
-        run: ruff check .
+        run: |
+          ruff check .
+          ruff check external/Darkelf-Webkit-Audit
+          ruff check external/Darkelf-Dependency-Guardian
+          ruff check external/Darkelf-Shadow-CE
 
       - name: Ruff Format Check
-        run: ruff format --check .
+        run: |
+          ruff format --check .
+          ruff format --check external/Darkelf-Webkit-Audit
+          ruff format --check external/Darkelf-Dependency-Guardian
+          ruff format --check external/Darkelf-Shadow-CE
 
       - name: Bandit Security Scan
-        run: bandit -r . -x tests,.venv,venv,build,dist -ll
+        run: |
+          bandit -r . -x tests,.venv,venv,build,dist,external -ll
+          bandit -r external/Darkelf-Webkit-Audit -ll
+          bandit -r external/Darkelf-Dependency-Guardian -ll
+          bandit -r external/Darkelf-Shadow-CE -ll
 
       ####################################################################
       # Tests
