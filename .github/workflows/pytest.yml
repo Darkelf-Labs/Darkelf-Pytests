@@ -79,6 +79,32 @@ jobs:
           path: external/Darkelf-Shadow-CE
 
       ####################################################################
+      # Linux runtime dependencies (Qt / OpenGL)
+      ####################################################################
+
+      - name: Install Linux Qt runtime
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          libegl1 \
+          libgl1 \
+          libopengl0 \
+          libglu1-mesa \
+          libxkbcommon-x11-0 \
+          libxcb-cursor0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libxcb-xinput0 \
+          libxrender1 \
+          libxi6 \
+          libsm6 \
+          libice6
+
+      ####################################################################
       # Install ecosystem packages
       ####################################################################
 
