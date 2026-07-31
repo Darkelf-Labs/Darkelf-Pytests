@@ -2,219 +2,192 @@
 tests/test_dependency_guardian.py
 
 Tests for Darkelf Dependency Guardian.
-Designed to work both locally and in GitHub Actions.
 """
 
 from __future__ import annotations
 
+import json
 from importlib.util import find_spec
 
 import pytest
 
 pytestmark = pytest.mark.dependencyguardian
 
-HAS_GUARDIAN = find_spec("guardian") is not None
-
-
-# ---------------------------------------------------------------------
-# Package Tests
-# ---------------------------------------------------------------------
+HAS_CORE = find_spec("core") is not None
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
-    reason="Dependency Guardian package/repository not available",
-)
-def test_import_package():
-    """Package imports successfully."""
-    import guardian  # noqa: F401
-
-
-@pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
 def test_import_scanner():
-    """Scanner module imports successfully."""
-    from guardian import scanner  # noqa: F401
+    from core.scanner import ProjectScanner
+
+    assert ProjectScanner is not None
+
+
+@pytest.mark.skipif(
+    not HAS_CORE,
+    reason="Dependency Guardian package/repository not available",
+)
+def test_import_projectinfo():
+    from core.scanner import ProjectInfo
+
+    assert ProjectInfo is not None
+
+
+@pytest.mark.skipif(
+    not HAS_CORE,
+    reason="Dependency Guardian package/repository not available",
+)
+def test_create_scanner(tmp_path):
+    from core.scanner import ProjectScanner
+
+    scanner = ProjectScanner(tmp_path)
 
     assert scanner is not None
 
 
-# ---------------------------------------------------------------------
-# Requirement Parsing
-# ---------------------------------------------------------------------
-
-
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_parse_valid_requirement():
-    """Parse a pinned requirement."""
-    from core.scanner import parse_requirement
+def test_detect_npm(tmp_path):
+    from core.scanner import ProjectScanner
 
-    pkg = parse_requirement("requests==2.32.0")
+    package = {
+        "name": "demo",
+        "version": "1.0.0",
+        "dependencies": {
+            "react": "^19.0.0",
+        },
+    }
 
-    assert pkg.name == "requests"
-    assert pkg.version == "2.32.0"
-
-
-@pytest.mark.skipif(
-    not HAS_GUARDIAN,
-    reason="Dependency Guardian package/repository not available",
-)
-def test_parse_requirement_without_version():
-    """Parse an unpinned requirement."""
-    from core.scanner import parse_requirement
-
-    pkg = parse_requirement("pytest")
-
-    assert pkg.name == "pytest"
-
-
-# ---------------------------------------------------------------------
-# Requirements Files
-# ---------------------------------------------------------------------
-
-
-@pytest.mark.skipif(
-    not HAS_GUARDIAN,
-    reason="Dependency Guardian package/repository not available",
-)
-def test_read_requirements_file(tmp_path):
-    """Read a requirements.txt file."""
-    req = tmp_path / "requirements.txt"
-
-    req.write_text(
-        "requests==2.32.0\nurllib3==2.2.2\n",
+    (tmp_path / "package.json").write_text(
+        json.dumps(package),
         encoding="utf-8",
     )
 
-    from core.scanner import load_requirements
+    scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
 
-    packages = load_requirements(req)
-
-    assert len(packages) == 2
-
-
-@pytest.mark.skipif(
-    not HAS_GUARDIAN,
-    reason="Dependency Guardian package/repository not available",
-)
-def test_empty_requirements(tmp_path):
-    """Empty requirements file returns an empty list."""
-    req = tmp_path / "requirements.txt"
-    req.write_text("", encoding="utf-8")
-
-    from core.scanner import load_requirements
-
-    assert load_requirements(req) == []
-
-
-# ---------------------------------------------------------------------
-# Scanner
-# ---------------------------------------------------------------------
+    assert info.package_manager == "npm"
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_scan_requirements(tmp_path):
-    """Single requirements file scan."""
-    req = tmp_path / "requirements.txt"
-    req.write_text("requests==2.32.0\n", encoding="utf-8")
+def test_detect_framework(tmp_path):
+    from core.scanner import ProjectScanner
 
-    from core.scanner import scan_file
+    package = {
+        "name": "demo",
+        "version": "1.0.0",
+        "dependencies": {
+            "next": "16.0.0",
+        },
+    }
 
-    results = scan_file(req)
+    (tmp_path / "package.json").write_text(
+        json.dumps(package),
+        encoding="utf-8",
+    )
 
-    assert isinstance(results, dict)
+    scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
+
+    assert info.framework == "Next.js"
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_scan_directory(tmp_path):
-    """Project scan returns a dictionary."""
-    req = tmp_path / "requirements.txt"
-    req.write_text("pytest==8.4.1\n", encoding="utf-8")
+def test_scan_returns_projectinfo(tmp_path):
+    from core.scanner import ProjectInfo, ProjectScanner
 
-    from core.scanner import scan_project
+    (tmp_path / "package.json").write_text(
+        '{"name":"demo"}',
+        encoding="utf-8",
+    )
 
-    results = scan_project(tmp_path)
+    scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
 
-    assert isinstance(results, dict)
-
-
-# ---------------------------------------------------------------------
-# Result Structure
-# ---------------------------------------------------------------------
+    assert isinstance(info, ProjectInfo)
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_results_have_keys(tmp_path):
-    """Returned scan contains expected keys."""
-    req = tmp_path / "requirements.txt"
-    req.write_text("pytest==8.4.1\n", encoding="utf-8")
+def test_dependencies_loaded(tmp_path):
+    from core.scanner import ProjectScanner
 
-    from core.scanner import scan_project
+    package = {
+        "dependencies": {
+            "react": "^19.0.0",
+            "next": "^16.0.0",
+        }
+    }
 
-    results = scan_project(tmp_path)
+    (tmp_path / "package.json").write_text(
+        json.dumps(package),
+        encoding="utf-8",
+    )
 
-    assert isinstance(results, dict)
-    assert "summary" in results
-    assert "packages" in results
+    scanner = ProjectScanner(tmp_path)
+    info = scanner.scan()
 
-
-# ---------------------------------------------------------------------
-# Regression
-# ---------------------------------------------------------------------
+    assert "react" in info.all_packages
+    assert "next" in info.all_packages
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_missing_file(tmp_path):
-    """Missing files should raise FileNotFoundError."""
-    from core.scanner import scan_file
+def test_missing_package_json(tmp_path):
+    from core.scanner import ProjectScanner
+
+    scanner = ProjectScanner(tmp_path)
 
     with pytest.raises(FileNotFoundError):
-        scan_file(tmp_path / "missing.txt")
+        scanner.scan()
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
-def test_scan_empty_directory(tmp_path):
-    """Scanning an empty directory should not crash."""
-    from core.scanner import scan_project
+def test_empty_package_json(tmp_path):
+    from core.scanner import ProjectScanner
 
-    results = scan_project(tmp_path)
+    (tmp_path / "package.json").write_text(
+        "{}",
+        encoding="utf-8",
+    )
 
-    assert isinstance(results, dict)
+    scanner = ProjectScanner(tmp_path)
+
+    info = scanner.scan()
+
+    assert info is not None
 
 
 @pytest.mark.skipif(
-    not HAS_GUARDIAN,
+    not HAS_CORE,
     reason="Dependency Guardian package/repository not available",
 )
 def test_scan_does_not_crash(tmp_path):
-    """Malformed requirements should not crash the scanner."""
-    req = tmp_path / "requirements.txt"
+    from core.scanner import ProjectScanner
 
-    req.write_text(
-        "invalid=====\n",
+    (tmp_path / "package.json").write_text(
+        '{"dependencies":{"bad":"*"}}',
         encoding="utf-8",
     )
 
-    from core.scanner import scan_project
+    scanner = ProjectScanner(tmp_path)
 
-    scan_project(tmp_path)
+    scanner.scan()
