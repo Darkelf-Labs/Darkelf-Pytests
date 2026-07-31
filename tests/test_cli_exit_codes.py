@@ -87,10 +87,10 @@ def test_secureaudit_invalid_argument():
 
 
 def test_dependency_guardian_help():
-    require_cli("darkelf-dependency-guardian")
+    require_cli("guardian")
 
     result = run_cli(
-        "darkelf-dependency-guardian",
+        "guardian",
         "--help",
     )
 
@@ -98,10 +98,10 @@ def test_dependency_guardian_help():
 
 
 def test_dependency_guardian_invalid_argument():
-    require_cli("darkelf-dependency-guardian")
+    require_cli("guardian")
 
     result = run_cli(
-        "darkelf-dependency-guardian",
+        "guardian",
         "--bad-option",
     )
 
