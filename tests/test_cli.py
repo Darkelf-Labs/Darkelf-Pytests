@@ -80,7 +80,7 @@ def test_dependency_guardian_help():
         pytest.skip("Dependency Guardian not installed")
 
     result = run_command(
-        "darkelf-dependency-guardian",
+        "guardian",
         "--help",
     )
 
