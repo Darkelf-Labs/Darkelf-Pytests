@@ -13,7 +13,7 @@ import pytest
 
 pytestmark = pytest.mark.dependencyguardian
 
-HAS_GUARDIAN = find_spec("darkelf_dependency_guardian") is not None
+HAS_GUARDIAN = find_spec("guardian") is not None
 
 
 # ---------------------------------------------------------------------
@@ -27,7 +27,7 @@ HAS_GUARDIAN = find_spec("darkelf_dependency_guardian") is not None
 )
 def test_import_package():
     """Package imports successfully."""
-    import darkelf_dependency_guardian  # noqa: F401
+    import guardian  # noqa: F401
 
 
 @pytest.mark.skipif(
@@ -36,7 +36,7 @@ def test_import_package():
 )
 def test_import_scanner():
     """Scanner module imports successfully."""
-    from darkelf_dependency_guardian import scanner  # noqa: F401
+    from guardian import scanner  # noqa: F401
 
     assert scanner is not None
 
@@ -52,7 +52,7 @@ def test_import_scanner():
 )
 def test_parse_valid_requirement():
     """Parse a pinned requirement."""
-    from darkelf_dependency_guardian.scanner import parse_requirement
+    from guardian.scanner import parse_requirement
 
     pkg = parse_requirement("requests==2.32.0")
 
@@ -66,7 +66,7 @@ def test_parse_valid_requirement():
 )
 def test_parse_requirement_without_version():
     """Parse an unpinned requirement."""
-    from darkelf_dependency_guardian.scanner import parse_requirement
+    from guardian.scanner import parse_requirement
 
     pkg = parse_requirement("pytest")
 
@@ -91,7 +91,7 @@ def test_read_requirements_file(tmp_path):
         encoding="utf-8",
     )
 
-    from darkelf_dependency_guardian.scanner import load_requirements
+    from guardian.scanner import load_requirements
 
     packages = load_requirements(req)
 
@@ -107,7 +107,7 @@ def test_empty_requirements(tmp_path):
     req = tmp_path / "requirements.txt"
     req.write_text("", encoding="utf-8")
 
-    from darkelf_dependency_guardian.scanner import load_requirements
+    from guardian.scanner import load_requirements
 
     assert load_requirements(req) == []
 
@@ -126,7 +126,7 @@ def test_scan_requirements(tmp_path):
     req = tmp_path / "requirements.txt"
     req.write_text("requests==2.32.0\n", encoding="utf-8")
 
-    from darkelf_dependency_guardian.scanner import scan_file
+    from guardian.scanner import scan_file
 
     results = scan_file(req)
 
@@ -142,7 +142,7 @@ def test_scan_directory(tmp_path):
     req = tmp_path / "requirements.txt"
     req.write_text("pytest==8.4.1\n", encoding="utf-8")
 
-    from darkelf_dependency_guardian.scanner import scan_project
+    from guardian.scanner import scan_project
 
     results = scan_project(tmp_path)
 
@@ -163,7 +163,7 @@ def test_results_have_keys(tmp_path):
     req = tmp_path / "requirements.txt"
     req.write_text("pytest==8.4.1\n", encoding="utf-8")
 
-    from darkelf_dependency_guardian.scanner import scan_project
+    from guardian.scanner import scan_project
 
     results = scan_project(tmp_path)
 
@@ -183,7 +183,7 @@ def test_results_have_keys(tmp_path):
 )
 def test_missing_file(tmp_path):
     """Missing files should raise FileNotFoundError."""
-    from darkelf_dependency_guardian.scanner import scan_file
+    from guardian.scanner import scan_file
 
     with pytest.raises(FileNotFoundError):
         scan_file(tmp_path / "missing.txt")
@@ -195,7 +195,7 @@ def test_missing_file(tmp_path):
 )
 def test_scan_empty_directory(tmp_path):
     """Scanning an empty directory should not crash."""
-    from darkelf_dependency_guardian.scanner import scan_project
+    from guardian.scanner import scan_project
 
     results = scan_project(tmp_path)
 
@@ -215,6 +215,6 @@ def test_scan_does_not_crash(tmp_path):
         encoding="utf-8",
     )
 
-    from darkelf_dependency_guardian.scanner import scan_project
+    from guardian.scanner import scan_project
 
     scan_project(tmp_path)
