@@ -122,9 +122,11 @@ def test_shadow_help():
 
     assert result.returncode == 0
 
+
 # ---------------------------------------------------------------------
 # Cocoa
 # ---------------------------------------------------------------------
+
 
 def test_cocoa_exists():
     if shutil.which("darkelf-cocoa") is None:

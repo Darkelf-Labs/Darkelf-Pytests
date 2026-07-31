@@ -112,6 +112,7 @@ def test_dependency_guardian_invalid_argument():
 # Shadow
 # ---------------------------------------------------------------------
 
+
 def test_shadow_help():
     import platform
 
