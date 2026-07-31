@@ -8,6 +8,11 @@ from pathlib import Path
 
 import pytest
 
+scan_project = pytest.importorskip(
+    "darkelf_secureaudit.scanner",
+    reason="Darkelf SecureAudit not installed",
+).scan_project
+
 pytestmark = pytest.mark.secureaudit
 
 
