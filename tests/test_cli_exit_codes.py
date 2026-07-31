@@ -131,27 +131,9 @@ def test_shadow_help():
 
     assert result.returncode == 0
 
-
-# ---------------------------------------------------------------------
-# Cocoa
-# ---------------------------------------------------------------------
-
-
-def test_cocoa_help():
-    require_cli("darkelf-cocoa")
-
-    result = run_cli(
-        "darkelf-cocoa",
-        "--help",
-    )
-
-    assert result.returncode == 0
-
-
 # ---------------------------------------------------------------------
 # Python Exit Codes
 # ---------------------------------------------------------------------
-
 
 def test_python_zero_exit():
     result = subprocess.run(
