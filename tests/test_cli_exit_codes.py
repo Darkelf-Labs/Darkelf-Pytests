@@ -122,7 +122,12 @@ def test_shadow_help():
             "--help",
         )
     except subprocess.TimeoutExpired:
-        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
+        pytest.skip(
+            "darkelf-shadow currently launches the GUI instead of exiting with --help"
+        )
+
+    if "libEGL.so.1" in result.stderr:
+        pytest.skip("Qt runtime not available on this runner")
 
     assert result.returncode == 0
 
