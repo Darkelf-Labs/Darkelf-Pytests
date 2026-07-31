@@ -121,7 +121,7 @@ def test_package_has_version():
 def test_import_no_exception():
     """Import should not raise unexpected exceptions."""
     try:
-        import darkelf_shadow  # noqa: F401
+        import shadow  # noqa: F401
     except Exception as exc:
         pytest.fail(f"Import failed: {exc}")
 
