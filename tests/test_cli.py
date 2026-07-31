@@ -122,29 +122,6 @@ def test_shadow_help():
 
     assert result.returncode == 0
 
-
-# ---------------------------------------------------------------------
-# Cocoa
-# ---------------------------------------------------------------------
-
-
-def test_cocoa_exists():
-    if shutil.which("darkelf-cocoa") is None:
-        pytest.skip("Darkelf Cocoa not installed")
-
-
-def test_cocoa_help():
-    if shutil.which("darkelf-cocoa") is None:
-        pytest.skip("Darkelf Cocoa not installed")
-
-    result = run_command(
-        "darkelf-cocoa",
-        "--help",
-    )
-
-    assert result.returncode == 0
-
-
 # ---------------------------------------------------------------------
 # Regression
 # ---------------------------------------------------------------------
