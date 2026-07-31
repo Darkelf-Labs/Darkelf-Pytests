@@ -107,7 +107,7 @@ def test_package_has_version():
     """Package exposes a version string if available."""
     import shadow
 
-    version = getattr(darkelf_shadow, "__version__", None)
+    version = getattr(shadow, "__version__", None)
 
     if version is not None:
         assert isinstance(version, str)
