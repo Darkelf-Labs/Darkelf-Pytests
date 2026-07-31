@@ -71,12 +71,12 @@ def test_secureaudit_version():
 
 
 def test_dependency_guardian_exists():
-    if shutil.which("darkelf-dependency-guardian") is None:
+    if shutil.which("guardian") is None:
         pytest.skip("Dependency Guardian not installed")
 
 
 def test_dependency_guardian_help():
-    if shutil.which("darkelf-dependency-guardian") is None:
+    if shutil.which("guardian") is None:
         pytest.skip("Dependency Guardian not installed")
 
     result = run_command(
