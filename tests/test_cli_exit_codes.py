@@ -112,7 +112,6 @@ def test_dependency_guardian_invalid_argument():
 # Shadow
 # ---------------------------------------------------------------------
 
-
 def test_shadow_help():
     import platform
 
@@ -127,10 +126,12 @@ def test_shadow_help():
             "--help",
         )
     except subprocess.TimeoutExpired:
-        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
+        pytest.skip(
+            "darkelf-shadow currently launches the GUI instead of exiting with --help"
+        )
 
     assert result.returncode == 0
-    
+
 
 # ---------------------------------------------------------------------
 # Python Exit Codes
