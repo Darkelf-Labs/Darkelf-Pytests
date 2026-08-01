@@ -201,9 +201,9 @@ jobs:
       ####################################################################
 
       - name: Upload Pytest Cache
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-cache-${{ matrix.os }}-${{ matrix.python-version }}
-          path: .pytest_cache
-          if-no-files-found: ignore
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-cache-${{ matrix.os }}-${{ matrix.python-version }}
+        path: .pytest_cache
+        if-no-files-found: ignore
