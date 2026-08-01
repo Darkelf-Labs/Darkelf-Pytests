@@ -175,6 +175,7 @@ jobs:
       ####################################################################
 
       - name: Run Pytest
+        shell: bash
         run: |
           pytest \
             --cov=tests \
