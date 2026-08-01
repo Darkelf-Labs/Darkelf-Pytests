@@ -160,6 +160,7 @@ jobs:
           ruff check external/Darkelf-Webkit-Audit
           ruff check external/Darkelf-Dependency-Guardian
           ruff check external/Darkelf-Shadow-CE
+          ruff check external/Darkelf-CLI-Browser
 
       - name: Ruff Format Check
         run: |
@@ -167,6 +168,7 @@ jobs:
           ruff format --check external/Darkelf-Webkit-Audit
           ruff format --check external/Darkelf-Dependency-Guardian
           ruff format --check external/Darkelf-Shadow-CE
+          ruff format --check external/Darkelf-CLI-Browser
 
       ####################################################################
       # Bandit
@@ -178,6 +180,7 @@ jobs:
           bandit -r external/Darkelf-Webkit-Audit -ll
           bandit -r external/Darkelf-Dependency-Guardian -ll
           bandit -r external/Darkelf-Shadow-CE -ll
+          bandit -r external/Darkelf-CLI-Browser -ll
 
       ####################################################################
       # Pytest
@@ -191,6 +194,7 @@ jobs:
             --cov=external/Darkelf-Webkit-Audit/darkelf_secureaudit \
             --cov=external/Darkelf-Dependency-Guardian/core \
             --cov=external/Darkelf-Shadow-CE/shadow \
+            --cov=external/Darkelf-CLI-Browser/darkelf_cli \
             --cov-report=term-missing \
             --cov-report=xml
 
