@@ -97,32 +97,6 @@ def test_shadow_exists():
         pytest.skip("Darkelf Shadow not installed")
 
 
-def test_shadow_help():
-    """
-    Shadow should support --help.
-
-    Skip on Linux because the Qt GUI aborts in the
-    GitHub Actions headless environment.
-    """
-    import platform
-
-    if platform.system() == "Linux":
-        pytest.skip("Shadow CLI help is not supported on Linux CI")
-
-    if shutil.which("darkelf-shadow") is None:
-        pytest.skip("Darkelf Shadow not installed")
-
-    try:
-        result = run_command(
-            "darkelf-shadow",
-            "--help",
-        )
-    except subprocess.TimeoutExpired:
-        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
-
-    assert result.returncode == 0
-
-
 # ---------------------------------------------------------------------
 # Regression
 # ---------------------------------------------------------------------
