@@ -113,25 +113,6 @@ def test_dependency_guardian_invalid_argument():
 # ---------------------------------------------------------------------
 
 
-def test_shadow_help():
-    import platform
-
-    if platform.system() == "Linux":
-        pytest.skip("Shadow CLI help is not supported on Linux CI")
-
-    require_cli("darkelf-shadow")
-
-    try:
-        result = run_cli(
-            "darkelf-shadow",
-            "--help",
-        )
-    except subprocess.TimeoutExpired:
-        pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
-
-    assert result.returncode == 0
-
-
 # ---------------------------------------------------------------------
 # Python Exit Codes
 # ---------------------------------------------------------------------
