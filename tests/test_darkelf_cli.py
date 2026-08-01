@@ -1,17 +1,9 @@
 import hashlib
 from unittest.mock import MagicMock, patch
 
-from importlib.util import find_spec
-
 import pytest
 
-if find_spec("darkelf_cli") is None:
-    pytest.skip(
-        "Darkelf CLI Browser not installed",
-        allow_module_level=True,
-    )
-
-from darkelf_cli import cli
+cli = pytest.importorskip("darkelf_cli.cli")
 
 
 # ----------------------------------------------------------
