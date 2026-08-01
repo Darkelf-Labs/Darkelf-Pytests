@@ -72,6 +72,7 @@ def test_secureaudit_repeatability(repo_root):
 # Dependency Guardian
 # ---------------------------------------------------------------------
 
+
 def test_dependency_guardian_scan_speed(tmp_path):
     """Dependency Guardian should scan quickly."""
 
