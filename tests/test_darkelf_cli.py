@@ -1,8 +1,6 @@
 import hashlib
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from darkelf_cli import cli
 
 
