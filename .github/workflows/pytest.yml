@@ -85,6 +85,12 @@ jobs:
           repository: Darkelf-Labs/Darkelf-Shadow-CE
           path: external/Darkelf-Shadow-CE
 
+      - name: Checkout Darkelf CLI Browser
+        uses: actions/checkout@v5
+        with:
+          repository: Darkelf-Labs/Darkelf-CLI-Browser
+          path: external/Darkelf-CLI-Browser
+
       ####################################################################
       # Linux Qt Runtime
       ####################################################################
