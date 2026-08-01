@@ -5,10 +5,10 @@ import pytest
 
 cli = pytest.importorskip("darkelf_cli.cli")
 
-
 # ----------------------------------------------------------
 # Basic Constants
 # ----------------------------------------------------------
+
 
 def test_duck_url_exists():
     assert cli.DUCKDUCKGO_LITE.startswith("https://")
@@ -25,6 +25,7 @@ def test_languages_present():
 # ----------------------------------------------------------
 # Headers
 # ----------------------------------------------------------
+
 
 def test_random_headers_returns_required_fields():
     headers = cli.random_headers()
@@ -58,6 +59,7 @@ def test_random_headers_noise():
 # Logging
 # ----------------------------------------------------------
 
+
 def test_setup_logging():
     cli.setup_logging(debug=False)
     cli.setup_logging(debug=True)
@@ -67,6 +69,7 @@ def test_setup_logging():
 # Entropy
 # ----------------------------------------------------------
 
+
 def test_entropy():
     cli.ensure_strong_entropy(32)
 
@@ -74,6 +77,7 @@ def test_entropy():
 # ----------------------------------------------------------
 # Tracker Hash
 # ----------------------------------------------------------
+
 
 def test_tracker_hash():
     h = hashlib.sha256("google-analytics.com".encode()).hexdigest()
@@ -84,6 +88,7 @@ def test_tracker_hash():
 # ----------------------------------------------------------
 # DDG Parser
 # ----------------------------------------------------------
+
 
 def test_parse_ddg_empty():
     from bs4 import BeautifulSoup
@@ -115,6 +120,7 @@ def test_parse_ddg_link():
 # ----------------------------------------------------------
 # Network
 # ----------------------------------------------------------
+
 
 @patch("darkelf_cli.cli.requests.Session")
 def test_fetch_requests(mock_session):
@@ -149,9 +155,7 @@ def test_fetch_isolated(mock_session):
 
     mock_session.return_value = session
 
-    html, hdrs = cli.fetch_with_isolated_session(
-        "https://example.com"
-    )
+    html, hdrs = cli.fetch_with_isolated_session("https://example.com")
 
     assert "<html>" in html
 
@@ -159,6 +163,7 @@ def test_fetch_isolated(mock_session):
 # ----------------------------------------------------------
 # Browser Object
 # ----------------------------------------------------------
+
 
 def test_browser_creation():
     browser = cli.DarkelfCLIBrowser()
@@ -190,6 +195,7 @@ def test_secure_wipe():
 # ----------------------------------------------------------
 # Main Entry
 # ----------------------------------------------------------
+
 
 @patch("darkelf_cli.cli.main_menu")
 def test_main_menu_called(mock_menu):
