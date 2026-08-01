@@ -130,6 +130,9 @@ jobs:
       - name: Install Shadow CE
         run: pip install -e external/Darkelf-Shadow-CE
 
+      - name: Install CLI Browser
+        run: pip install -e external/Darkelf-CLI-Browser
+
       ####################################################################
       # Verify installation
       ####################################################################
