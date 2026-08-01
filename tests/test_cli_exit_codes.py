@@ -130,10 +130,12 @@ def test_shadow_help():
         pytest.skip("darkelf-shadow currently launches the GUI instead of exiting with --help")
 
     assert result.returncode == 0
+    
 
 # ---------------------------------------------------------------------
 # Python Exit Codes
 # ---------------------------------------------------------------------
+
 
 def test_python_zero_exit():
     result = subprocess.run(
