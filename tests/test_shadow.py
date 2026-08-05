@@ -175,11 +175,12 @@ def test_shadow_module_import_or_skip(module_name):
     try:
         module = importlib.import_module(module_name)
         assert module is not None
-    except OSError:
-        # OSError (e.g. [Errno 9] Bad file descriptor) can occur on macOS when
-        # Qt/PySide6 modules interact with the process environment during import
-        # (e.g. accessing audio/video devices or forking subprocesses in CI).
-        pytest.skip(f"Skipping {module_name}: OSError raised on import (macOS CI environment)")
+    except OSError as exc:
+        # Some Shadow modules can trigger low-level OS/runtime issues on CI
+        # (notably [Errno 9] Bad file descriptor on macOS/Windows runners)
+        # while importing optional Qt/WebEngine integrations. Treat these as
+        # environment-specific import failures and skip instead of destabilizing CI.
+        pytest.skip(f"Skipping {module_name}: OSError raised on import ({exc})")
     except Exception as exc:
         msg = str(exc).lower()
 
