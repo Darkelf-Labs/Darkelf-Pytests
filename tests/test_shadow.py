@@ -19,9 +19,17 @@ import pytest
 
 pytestmark = pytest.mark.shadow
 
+
+def _module_exists(module_name: str) -> bool:
+    try:
+        return find_spec(module_name) is not None
+    except ModuleNotFoundError:
+        return False
+
+
 HAS_SHADOW = find_spec("shadow") is not None
-HAS_PYSIDE6 = find_spec("PySide6") is not None
-HAS_QTWEBENGINE = find_spec("PySide6.QtWebEngineCore") is not None
+HAS_PYSIDE6 = _module_exists("PySide6")
+HAS_QTWEBENGINE = _module_exists("PySide6.QtWebEngineCore")
 
 
 # ---------------------------------------------------------------------
@@ -205,6 +213,15 @@ def test_shadow_module_import_or_skip(module_name):
         pytest.fail(f"Import failed for {module_name}: {exc}")
 
 
+def _import_shadow_module_or_skip(module_name: str):
+    try:
+        return importlib.import_module(module_name)
+    except OSError as exc:
+        pytest.skip(f"Skipping {module_name}: OSError raised on import ({exc})")
+    except Exception as exc:
+        pytest.skip(f"Skipping {module_name}: {exc}")
+
+
 @pytest.mark.skipif(
     not HAS_SHADOW,
     reason="Darkelf Shadow package/repository not available",
@@ -215,10 +232,7 @@ def test_shadow_module_has_public_symbols(module_name):
     Ensure modules expose at least one public symbol (non-underscore name),
     which is a lightweight structural contract.
     """
-    try:
-        module = importlib.import_module(module_name)
-    except Exception as exc:
-        pytest.skip(f"Skipping symbol inspection for {module_name}: {exc}")
+    module = _import_shadow_module_or_skip(module_name)
 
     public_names = [n for n in dir(module) if not n.startswith("_")]
     assert isinstance(public_names, list)
@@ -231,10 +245,7 @@ def test_shadow_module_has_public_symbols(module_name):
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
 def test_shadow_module_file_path_is_real(module_name):
-    try:
-        module = importlib.import_module(module_name)
-    except Exception as exc:
-        pytest.skip(f"Skipping file-path check for {module_name}: {exc}")
+    module = _import_shadow_module_or_skip(module_name)
 
     module_file = getattr(module, "__file__", None)
     # Some namespace-style modules may not always have __file__, so guard.
