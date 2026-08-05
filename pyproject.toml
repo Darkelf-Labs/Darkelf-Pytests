@@ -74,6 +74,7 @@
 
  [tool.coverage.run]
  branch = true
+ concurrency = ["thread"]
  source = [
      "tests",
  ]
