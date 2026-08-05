@@ -83,7 +83,8 @@ def test_headless_env_is_safe_to_set():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_package_import():
     import shadow  # noqa: F401
@@ -91,7 +92,8 @@ def test_package_import():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_package_path_exists():
     import shadow
@@ -101,7 +103,8 @@ def test_package_path_exists():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_package_has_version():
     import shadow
@@ -114,7 +117,8 @@ def test_package_has_version():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_import_no_exception():
     try:
@@ -134,7 +138,8 @@ def test_current_directory_exists():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_shadow_package_directory_contains_python_files():
     import shadow
@@ -175,7 +180,8 @@ SHADOW_MODULES = [
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
 def test_shadow_module_spec_exists(module_name):
@@ -185,7 +191,8 @@ def test_shadow_module_spec_exists(module_name):
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
 def test_shadow_module_import_or_skip(module_name):
@@ -220,7 +227,9 @@ def test_shadow_module_import_or_skip(module_name):
         )
 
         if any(marker in msg for marker in optional_markers):
-            pytest.skip(f"Optional runtime dependency unavailable for {module_name}: {exc}")
+            pytest.skip(
+                f"Optional runtime dependency unavailable for {module_name}: {exc}"
+            )
 
         # If import hard-fails for other reasons, surface it.
         pytest.fail(f"Import failed for {module_name}: {exc}")
@@ -237,7 +246,8 @@ def _import_shadow_module_or_skip(module_name: str):
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
 def test_shadow_module_has_public_symbols(module_name):
@@ -254,7 +264,8 @@ def test_shadow_module_has_public_symbols(module_name):
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
 def test_shadow_module_file_path_is_real(module_name):
@@ -274,7 +285,8 @@ def test_shadow_module_file_path_is_real(module_name):
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_shadow_constants_module_shape():
     try:
@@ -288,7 +300,8 @@ def test_shadow_constants_module_shape():
 
 @pytest.mark.skipif(
     not HAS_SHADOW or SHADOW_IMPORT_SKIP_REASON is not None,
-    reason=SHADOW_IMPORT_SKIP_REASON or "Darkelf Shadow package/repository not available",
+    reason=SHADOW_IMPORT_SKIP_REASON
+    or "Darkelf Shadow package/repository not available",
 )
 def test_shadow_utils_module_members():
     try:
@@ -340,7 +353,9 @@ def test_reimport_shadow_package_is_idempotent():
     not HAS_SHADOW,
     reason="Darkelf Shadow package/repository not available",
 )
-@pytest.mark.parametrize("module_name", ["shadow.utils", "shadow.constants", "shadow.cli"])
+@pytest.mark.parametrize(
+    "module_name", ["shadow.utils", "shadow.constants", "shadow.cli"]
+)
 def test_reimport_selected_modules(module_name):
     try:
         module = importlib.import_module(module_name)
