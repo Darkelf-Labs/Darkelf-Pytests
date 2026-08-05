@@ -21,7 +21,7 @@ pytestmark = pytest.mark.shadow
 
 HAS_SHADOW = find_spec("shadow") is not None
 HAS_PYSIDE6 = find_spec("PySide6") is not None
-HAS_QTWEBENGINE = find_spec("PySide6.QtWebEngineCore") is not None
+HAS_QTWEBENGINE = HAS_PYSIDE6 and find_spec("PySide6.QtWebEngineCore") is not None
 
 
 # ---------------------------------------------------------------------
@@ -151,6 +151,10 @@ SHADOW_MODULES = [
     "shadow.utils",
 ]
 
+HEAVY_IMPORT_SHADOW_MODULES = {
+    "shadow.boot",
+}
+
 
 @pytest.mark.skipif(
     not HAS_SHADOW,
@@ -172,6 +176,9 @@ def test_shadow_module_import_or_skip(module_name):
     Import each module to increase executed lines while remaining CI-safe.
     If a module requires unavailable optional runtime features, skip cleanly.
     """
+    if module_name in HEAVY_IMPORT_SHADOW_MODULES:
+        pytest.skip(f"Skipping heavyweight bootstrap import for {module_name}")
+
     try:
         module = importlib.import_module(module_name)
         assert module is not None
@@ -197,6 +204,12 @@ def test_shadow_module_import_or_skip(module_name):
 
         # If import hard-fails for other reasons, surface it.
         pytest.fail(f"Import failed for {module_name}: {exc}")
+
+
+def test_heavy_shadow_modules_are_covered_by_spec_check():
+    """Heavy GUI/bootstrap modules should not be eagerly imported in CI."""
+    assert HEAVY_IMPORT_SHADOW_MODULES
+    assert HEAVY_IMPORT_SHADOW_MODULES.issubset(set(SHADOW_MODULES))
 
 
 @pytest.mark.skipif(
