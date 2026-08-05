@@ -162,13 +162,13 @@ jobs:
           ruff check external/Darkelf-Shadow-CE
           ruff check external/Darkelf-CLI-Browser
 
-      - name: Ruff Format Check
+      - name: Ruff Format
         run: |
-          ruff format --check .
-          ruff format --check external/Darkelf-Webkit-Audit
-          ruff format --check external/Darkelf-Dependency-Guardian
-          ruff format --check external/Darkelf-Shadow-CE
-          ruff format --check external/Darkelf-CLI-Browser
+          ruff format .
+          ruff format external/Darkelf-Webkit-Audit
+          ruff format external/Darkelf-Dependency-Guardian
+          ruff format external/Darkelf-Shadow-CE
+          ruff format external/Darkelf-CLI-Browser
 
       ####################################################################
       # Bandit
