@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import importlib
 import inspect
-import io
 import os
 import platform
 import sys
@@ -168,47 +167,20 @@ def test_shadow_module_spec_exists(module_name):
     reason="Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
-def test_shadow_module_import_or_skip(module_name):
+def test_shadow_module_imports(module_name, monkeypatch):
     """
-    Import each module to increase executed lines while remaining CI-safe.
-    If a module requires unavailable optional runtime features, skip cleanly.
-    """
-    skip_reason = None
+    Import every Shadow module normally.
 
-    try:
+    browser.py redirects stderr with os.dup2(..., sys.stderr.fileno()) at
+    import time. pytest replaces sys.stderr while capturing output, and that
+    capture object may not expose a usable fileno().  Give the import a real
+    OS-backed stderr temporarily instead of hiding the error with a skip.
+    """
+    with open(os.devnull, "w") as real_stderr:
+        monkeypatch.setattr(sys, "stderr", real_stderr)
         module = importlib.import_module(module_name)
-        assert module is not None
-    except Exception as exc:
-        msg = str(exc).lower()
 
-        if isinstance(exc, io.UnsupportedOperation) and "fileno" in msg:
-            skip_reason = (
-                f"Skipping {module_name}: io.UnsupportedOperation('fileno') caused by "
-                "pytest capture conflict"
-            )
-        else:
-            # Optional runtime/system deps that may vary across runners.
-            optional_markers = (
-                "qwebengine",
-                "qtwebengine",
-                "display",
-                "xcb",
-                "opengl",
-                "glx",
-                "wayland",
-                "dbus",
-                "sandbox",
-                "webenginecontext",
-            )
-
-            if any(marker in msg for marker in optional_markers):
-                skip_reason = f"Optional runtime dependency unavailable for {module_name}: {exc}"
-            else:
-                # If import hard-fails for other reasons, surface it.
-                pytest.fail(f"Import failed for {module_name}: {exc}")
-
-    if skip_reason is not None:
-        pytest.skip(skip_reason)
+    assert module is not None
 
 
 @pytest.mark.skipif(
@@ -216,19 +188,13 @@ def test_shadow_module_import_or_skip(module_name):
     reason="Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
-def test_shadow_module_has_public_symbols(module_name):
-    """
-    Ensure modules expose at least one public symbol (non-underscore name),
-    which is a lightweight structural contract.
-    """
-    try:
+def test_shadow_module_has_public_symbols(module_name, monkeypatch):
+    with open(os.devnull, "w") as real_stderr:
+        monkeypatch.setattr(sys, "stderr", real_stderr)
         module = importlib.import_module(module_name)
-    except Exception as exc:
-        pytest.skip(f"Skipping symbol inspection for {module_name}: {exc}")
 
     public_names = [n for n in dir(module) if not n.startswith("_")]
-    assert isinstance(public_names, list)
-    assert len(public_names) >= 0  # intentional: module may be intentionally minimal
+    assert public_names, f"{module_name} exposes no public symbols"
 
 
 @pytest.mark.skipif(
@@ -236,16 +202,13 @@ def test_shadow_module_has_public_symbols(module_name):
     reason="Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", SHADOW_MODULES)
-def test_shadow_module_file_path_is_real(module_name):
-    try:
+def test_shadow_module_file_path_is_real(module_name, monkeypatch):
+    with open(os.devnull, "w") as real_stderr:
+        monkeypatch.setattr(sys, "stderr", real_stderr)
         module = importlib.import_module(module_name)
-    except Exception as exc:
-        pytest.skip(f"Skipping file-path check for {module_name}: {exc}")
 
     module_file = getattr(module, "__file__", None)
-    # Some namespace-style modules may not always have __file__, so guard.
-    if module_file is None:
-        pytest.skip(f"{module_name} has no __file__ attribute")
+    assert module_file is not None, f"{module_name} has no __file__ attribute"
     assert Path(module_file).exists(), f"Module file path does not exist: {module_file}"
 
 
@@ -259,11 +222,7 @@ def test_shadow_module_file_path_is_real(module_name):
     reason="Darkelf Shadow package/repository not available",
 )
 def test_shadow_constants_module_shape():
-    try:
-        constants = importlib.import_module("shadow.constants")
-    except Exception as exc:
-        pytest.skip(f"Cannot import shadow.constants: {exc}")
-
+    constants = importlib.import_module("shadow.constants")
     names = dir(constants)
     assert names  # module loaded and introspectable
 
@@ -273,11 +232,7 @@ def test_shadow_constants_module_shape():
     reason="Darkelf Shadow package/repository not available",
 )
 def test_shadow_utils_module_members():
-    try:
-        utils = importlib.import_module("shadow.utils")
-    except Exception as exc:
-        pytest.skip(f"Cannot import shadow.utils: {exc}")
-
+    utils = importlib.import_module("shadow.utils")
     funcs = [
         name
         for name, obj in inspect.getmembers(utils)
@@ -291,11 +246,10 @@ def test_shadow_utils_module_members():
     not HAS_SHADOW,
     reason="Darkelf Shadow package/repository not available",
 )
-def test_shadow_cli_module_imports():
-    try:
+def test_shadow_cli_module_imports(monkeypatch):
+    with open(os.devnull, "w") as real_stderr:
+        monkeypatch.setattr(sys, "stderr", real_stderr)
         cli = importlib.import_module("shadow.cli")
-    except Exception as exc:
-        pytest.skip(f"Cannot import shadow.cli: {exc}")
 
     assert cli is not None
 
@@ -323,10 +277,10 @@ def test_reimport_shadow_package_is_idempotent():
     reason="Darkelf Shadow package/repository not available",
 )
 @pytest.mark.parametrize("module_name", ["shadow.utils", "shadow.constants", "shadow.cli"])
-def test_reimport_selected_modules(module_name):
-    try:
+def test_reimport_selected_modules(module_name, monkeypatch):
+    with open(os.devnull, "w") as real_stderr:
+        monkeypatch.setattr(sys, "stderr", real_stderr)
         module = importlib.import_module(module_name)
         reloaded = importlib.reload(module)
-        assert reloaded is module
-    except Exception as exc:
-        pytest.skip(f"Skipping reload test for {module_name}: {exc}")
+
+    assert reloaded is module
