@@ -180,7 +180,10 @@ def test_shadow_module_import_or_skip(module_name):
         msg = str(exc).lower()
 
         if isinstance(exc, io.UnsupportedOperation) and msg == "fileno":
-            pytest.skip(f"Optional runtime dependency unavailable for {module_name}: {exc}")
+            pytest.skip(
+                f"Skipping {module_name}: io.UnsupportedOperation('fileno') caused by "
+                "pytest capture conflict"
+            )
 
         # Optional runtime/system deps that may vary across runners.
         optional_markers = (
