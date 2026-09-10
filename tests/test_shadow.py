@@ -173,6 +173,8 @@ def test_shadow_module_import_or_skip(module_name):
     Import each module to increase executed lines while remaining CI-safe.
     If a module requires unavailable optional runtime features, skip cleanly.
     """
+    skip_reason = None
+
     try:
         module = importlib.import_module(module_name)
         assert module is not None
@@ -180,32 +182,33 @@ def test_shadow_module_import_or_skip(module_name):
         msg = str(exc).lower()
 
         if isinstance(exc, io.UnsupportedOperation) and "fileno" in msg:
-            # Intentionally skip from inside this exception path for pytest's
-            # sys-capture/fileno incompatibility.
-            pytest.skip(
+            skip_reason = (
                 f"Skipping {module_name}: io.UnsupportedOperation('fileno') caused by "
                 "pytest capture conflict"
             )
+        else:
+            # Optional runtime/system deps that may vary across runners.
+            optional_markers = (
+                "qwebengine",
+                "qtwebengine",
+                "display",
+                "xcb",
+                "opengl",
+                "glx",
+                "wayland",
+                "dbus",
+                "sandbox",
+                "webenginecontext",
+            )
 
-        # Optional runtime/system deps that may vary across runners.
-        optional_markers = (
-            "qwebengine",
-            "qtwebengine",
-            "display",
-            "xcb",
-            "opengl",
-            "glx",
-            "wayland",
-            "dbus",
-            "sandbox",
-            "webenginecontext",
-        )
+            if any(marker in msg for marker in optional_markers):
+                skip_reason = f"Optional runtime dependency unavailable for {module_name}: {exc}"
+            else:
+                # If import hard-fails for other reasons, surface it.
+                pytest.fail(f"Import failed for {module_name}: {exc}")
 
-        if any(marker in msg for marker in optional_markers):
-            pytest.skip(f"Optional runtime dependency unavailable for {module_name}: {exc}")
-
-        # If import hard-fails for other reasons, surface it.
-        pytest.fail(f"Import failed for {module_name}: {exc}")
+    if skip_reason is not None:
+        pytest.skip(skip_reason)
 
 
 @pytest.mark.skipif(
