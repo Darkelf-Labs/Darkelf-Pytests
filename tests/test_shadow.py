@@ -190,6 +190,8 @@ def test_shadow_module_import_or_skip(module_name):
             "dbus",
             "sandbox",
             "webenginecontext",
+            "fileno",
+            "unsupportedoperation",
         )
 
         if any(marker in msg for marker in optional_markers):
