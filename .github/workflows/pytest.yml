@@ -190,7 +190,6 @@ jobs:
         shell: bash
         run: |
           pytest \
-            --capture=sys \
             --cov=tests \
             --cov=external/Darkelf-Webkit-Audit/darkelf_secureaudit \
             --cov=external/Darkelf-Dependency-Guardian/core \
