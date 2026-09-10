@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
+import io
 import os
 import platform
 import sys
@@ -178,6 +179,9 @@ def test_shadow_module_import_or_skip(module_name):
     except Exception as exc:
         msg = str(exc).lower()
 
+        if isinstance(exc, io.UnsupportedOperation) and msg == "fileno":
+            pytest.skip(f"Optional runtime dependency unavailable for {module_name}: {exc}")
+
         # Optional runtime/system deps that may vary across runners.
         optional_markers = (
             "qwebengine",
@@ -190,8 +194,6 @@ def test_shadow_module_import_or_skip(module_name):
             "dbus",
             "sandbox",
             "webenginecontext",
-            "fileno",
-            "unsupportedoperation",
         )
 
         if any(marker in msg for marker in optional_markers):
