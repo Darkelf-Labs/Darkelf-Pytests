@@ -179,7 +179,7 @@ def test_shadow_module_import_or_skip(module_name):
     except Exception as exc:
         msg = str(exc).lower()
 
-        if isinstance(exc, io.UnsupportedOperation) and msg == "fileno":
+        if isinstance(exc, io.UnsupportedOperation) and "fileno" in msg:
             pytest.skip(
                 f"Skipping {module_name}: io.UnsupportedOperation('fileno') caused by "
                 "pytest capture conflict"
