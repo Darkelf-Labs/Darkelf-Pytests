@@ -180,6 +180,8 @@ def test_shadow_module_import_or_skip(module_name):
         msg = str(exc).lower()
 
         if isinstance(exc, io.UnsupportedOperation) and "fileno" in msg:
+            # Intentionally skip from inside this exception path for pytest's
+            # sys-capture/fileno incompatibility.
             pytest.skip(
                 f"Skipping {module_name}: io.UnsupportedOperation('fileno') caused by "
                 "pytest capture conflict"
