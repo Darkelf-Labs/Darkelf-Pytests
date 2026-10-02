@@ -203,7 +203,9 @@ def test_merge_cache_reused_and_corruption_rebuilt(shadow_module, monkeypatch, t
     compiled_path = tmp_path / "compiled.txt"
     monkeypatch.setattr(filters, "EASYLIST_CACHE_DIR", str(tmp_path))
     monkeypatch.setattr(filters, "DARKELF_COMPILED_FILTER", str(compiled_path))
-    monkeypatch.setattr(filters.EasyListEngine, "fetch_lists", lambda self, urls: ["||ads.example.net^"])
+    monkeypatch.setattr(
+        filters.EasyListEngine, "fetch_lists", lambda self, urls: ["||ads.example.net^"]
+    )
     original_merge = filters.EasyListEngine._compile_darkelf_filter
     calls = []
 
@@ -355,7 +357,10 @@ def _render_source_probe():
         window.tabs.resize(800, 600)
         window.show()
         # Exceeds setHtml's data-URL limit and checks literal entity handling.
-        html = "<p>&amp; <script>window.DARKELF_TEST_EXECUTED=true</script>\u2603</p>" + "x<&>" * 650_000
+        html = (
+            "<p>&amp; <script>window.DARKELF_TEST_EXECUTED=true</script>\u2603</p>"
+            + "x<&>" * 650_000
+        )
         browser.DarkelfBrowser._show_source_tab(window, html)
         deadline = time.monotonic() + 12
         matched = False
