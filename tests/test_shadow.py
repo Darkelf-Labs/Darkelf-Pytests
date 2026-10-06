@@ -352,6 +352,9 @@ def _render_source_probe():
                 super().__init__()
                 self.tabs = QTabWidget(self)
 
+            def _exit_video_fullscreen(self):
+                pass
+
         window = Harness()
         window.resize(800, 600)
         window.tabs.resize(800, 600)
